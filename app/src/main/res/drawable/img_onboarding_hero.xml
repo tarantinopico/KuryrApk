@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="#EFF6FF"
+        android:pathData="M0,0h320v180h-320z" />
+    <path
+        android:fillColor="#DBEAFE"
+        android:pathData="M30,140 C80,100 240,100 290,140 L290,180 L30,180 Z" />
+    <!-- Background card -->
+    <path
+        android:fillColor="#BFDBFE"
+        android:pathData="M86,32 L246,32 C252,32 256,36 256,42 L256,126 C256,132 252,136 246,136 L86,136 C80,136 76,132 76,126 L76,42 C76,36 80,32 86,32 Z" />
+    <!-- Primary envelope -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M70,44 L230,44 C236,44 240,48 240,54 L240,138 C240,144 236,148 230,148 L70,148 C64,148 60,144 60,138 L60,54 C60,48 64,44 70,44 Z" />
+    <!-- Envelope flap -->
+    <path
+        android:fillColor="#1E40AF"
+        android:pathData="M62,48 L150,104 L238,48 L238,56 L150,114 L62,56 Z" />
+    <!-- Royal blue seal badge -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M150,94 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M143,94 L148,99 L158,89 L160,91 L148,103 L141,96 Z" />
+</vector>

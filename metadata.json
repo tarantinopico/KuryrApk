@@ -1,0 +1,6 @@
+{
+  "name": "Kurýr",
+  "description": "Plnohodnotný multiprotokolový e-mailový klient (IMAP, SMTP, POP3, JMAP) s pokročilou customizací, kontakty a widgety.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Kurýr</string>
+    <string name="onboarding_title">Vítejte v aplikaci Kurýr</string>
+    <string name="onboarding_subtitle">Rychlý, nezávislý a bezpečný e-mailový klient s podporou IMAP, POP3, SMTP a JMAP bez OAuth telemetrie.</string>
+    <string name="onboarding_start_setup">Přidat první účet</string>
+    <string name="nav_inbox">Doručené</string>
+    <string name="nav_accounts">Účty</string>
+    <string name="nav_contacts">Kontakty</string>
+    <string name="nav_notifications">Notifikace</string>
+    <string name="nav_settings">Nastavení</string>
+    <string name="action_compose">Nová zpráva</string>
+    <string name="action_search">Hledat zprávy a kontakty</string>
+    <string name="action_sync">Synchronizovat nyní</string>
+    <string name="widget_unified_inbox_desc">Přehled doručené pošty ze všech účtů v aplikaci Kurýr</string>
+    <string name="widget_accounts_desc">Přehled e-mailových účtů s počty nepřečtených zpráv</string>
+    <string name="channel_vip_name">VIP a prioritní zprávy</string>
+    <string name="channel_standard_name">Nová pošta</string>
+    <string name="channel_digest_name">Denní a týdenní souhrny</string>
+</resources>
