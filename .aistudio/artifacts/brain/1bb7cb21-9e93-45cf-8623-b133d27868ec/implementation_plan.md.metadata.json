@@ -1,6 +1,6 @@
 {
-  "summary":  "Kompletní architektonický, produktový a technický plán pro e-mailového klienta Kurýr v Kotlinu a Jetpack Compose (MVVM + Clean Architecture, IMAP/SMTP/POP3/JMAP, Room, DataStore, Keystore, Glance widgety, správa kontaktů, notifikace a GitHub Actions CI/CD).",
-  "updatedAt":  "2026-10-21T17:28:48.880559384Z",
+  "summary":  "Plán opravy a vylepšení GitHub Actions workflow (.github/workflows/android-build.yml) pro bezchybnou validaci YAML schématu a 100% spolehlivou kompilaci APK v CI prostředí.",
+  "updatedAt":  "2026-10-21T18:29:39.289773278Z",
   "requestFeedback":  true,
   "userFacing":  true
 }

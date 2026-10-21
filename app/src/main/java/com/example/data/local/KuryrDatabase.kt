@@ -66,7 +66,7 @@ abstract class KuryrDatabase : RoomDatabase() {
                     context.applicationContext,
                     KuryrDatabase::class.java,
                     "kuryr_mail.db"
-                ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
+                ).fallbackToDestructiveMigration(dropAllTables = true).build().also { INSTANCE = it }
             }
         }
     }

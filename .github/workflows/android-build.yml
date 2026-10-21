@@ -4,12 +4,27 @@ on:
   push:
     branches:
       - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build-and-test:
     name: Build APK & Run Unit/UI Tests
     runs-on: ubuntu-latest
+
+    env:
+      JAVA_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=1g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx4g"
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     steps:
       - name: Checkout repository
@@ -21,10 +36,42 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Accept Android SDK Licenses
+        run: |
+          if [ -n "$ANDROID_HOME" ] && [ -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          fi
 
-      - name: Make gradlew executable
+      - name: Prepare .env and debug.keystore for CI
+        run: |
+          if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+            cp .env.example .env
+          elif [ ! -f ".env" ]; then
+            touch .env
+          fi
+
+          if [ ! -f "debug.keystore" ]; then
+            if [ -f "debug.keystore.base64" ]; then
+              base64 --decode debug.keystore.base64 > debug.keystore
+            else
+              keytool -genkeypair -v \
+                -keystore debug.keystore \
+                -storepass android \
+                -alias androiddebugkey \
+                -keypass android \
+                -keyalg RSA \
+                -keysize 2048 \
+                -validity 10000 \
+                -dname "CN=Android Debug,O=Android,C=US"
+            fi
+          fi
+
+      - name: Setup Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
+
+      - name: Make gradlew executable if present
         run: |
           if [ -f "./gradlew" ]; then
             chmod +x ./gradlew
@@ -33,17 +80,25 @@ jobs:
       - name: Run Unit and Robolectric UI Tests
         run: |
           if [ -f "./gradlew" ]; then
-            ./gradlew testDebugUnitTest --stacktrace
+            ./gradlew :app:testDebugUnitTest --stacktrace
           else
-            gradle testDebugUnitTest --stacktrace
+            gradle :app:testDebugUnitTest --stacktrace
           fi
+
+      - name: Upload Unit Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kuryr-unit-test-report
+          path: app/build/reports/tests/testDebugUnitTest/
+          if-no-files-found: ignore
 
       - name: Assemble Debug APK
         run: |
           if [ -f "./gradlew" ]; then
-            ./gradlew assembleDebug --stacktrace
+            ./gradlew :app:assembleDebug --stacktrace
           else
-            gradle assembleDebug --stacktrace
+            gradle :app:assembleDebug --stacktrace
           fi
 
       - name: Upload Debug APK Artifact
@@ -54,21 +109,19 @@ jobs:
           if-no-files-found: error
 
       - name: Assemble Signed Release APK (Optional when Secrets are configured)
-        if: ${{ secrets.KEYSTORE_BASE64 != '' && secrets.STORE_PASSWORD != '' && secrets.KEY_PASSWORD != '' }}
+        if: ${{ env.KEYSTORE_BASE64 != '' && env.STORE_PASSWORD != '' && env.KEY_PASSWORD != '' }}
         env:
           KEYSTORE_PATH: ${{ github.workspace }}/release-upload-key.jks
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$KEYSTORE_PATH"
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
           if [ -f "./gradlew" ]; then
-            ./gradlew assembleRelease --stacktrace
+            ./gradlew :app:assembleRelease --stacktrace
           else
-            gradle assembleRelease --stacktrace
+            gradle :app:assembleRelease --stacktrace
           fi
 
       - name: Upload Release APK Artifact
-        if: ${{ secrets.KEYSTORE_BASE64 != '' && secrets.STORE_PASSWORD != '' && secrets.KEY_PASSWORD != '' }}
+        if: ${{ env.KEYSTORE_BASE64 != '' && env.STORE_PASSWORD != '' && env.KEY_PASSWORD != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: kuryr-release-apk
